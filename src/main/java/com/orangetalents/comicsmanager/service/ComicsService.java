@@ -1,12 +1,22 @@
 package com.orangetalents.comicsmanager.service;
 
-import com.orangetalents.comicsmanager.client.MarvelClient;
+import com.orangetalents.comicsmanager.utils.client.MarvelClient;
 import com.orangetalents.comicsmanager.dto.ComicsDTO;
 import com.orangetalents.comicsmanager.dto.MarvelResponseDTO;
+import com.orangetalents.comicsmanager.dto.UserListComicsDTO;
+import com.orangetalents.comicsmanager.excepion.UserNotFoundException;
 import com.orangetalents.comicsmanager.model.Comics;
+import com.orangetalents.comicsmanager.model.User;
 import com.orangetalents.comicsmanager.repository.ComicsRepository;
+import com.orangetalents.comicsmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
+import static com.orangetalents.comicsmanager.utils.Const.*;
 
 @Service
 public class ComicsService {
@@ -17,23 +27,52 @@ public class ComicsService {
     @Autowired
     private ComicsRepository comicsRepository;
 
-    public Comics createComics(Long comicsId) {
+    @Autowired
+    private UserRepository userRepository;
 
-        MarvelResponseDTO response = marvelClient.comics(comicsId, "1", "4bed1697092faffe577408c94de335e3", "a763e1d818f7cfe0cb14ed75da52c045");
+    @Autowired
+    private MethodsService methodsService;
 
+
+    public Comics createComics(Long id, Long comicsId) {
+
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        MarvelResponseDTO response = marvelClient.comics(comicsId, TS, API_KEY, HASH);
         ComicsDTO comicsDTO = response.getData().getResults().get(0);
+        char lastChar = comicsDTO.getIsbn().charAt(comicsDTO.getIsbn().length() - 1);
+
+        methodsService.lastChar(lastChar);
 
         Comics comics = new Comics(
                 comicsDTO.getId(),
-                "",
-                false,
+                methodsService.discountDay,
                 comicsDTO.getTitle(),
                 comicsDTO.getPrices().get(0).getPrice(),
                 "",
                 comicsDTO.getIsbn(),
                 comicsDTO.getDescription(),
-                null
+                user
         );
         return comicsRepository.save(comics);
     }
+
+    public UserListComicsDTO getUserComicList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        List<Comics> userComicList = comicsRepository.findAllByUserId(userId);
+        UserListComicsDTO userListComicsDTO = new UserListComicsDTO(user, userComicList);
+
+        BigDecimal discount = BigDecimal.valueOf(0.9);
+
+        for (Comics comics : userComicList) {
+            if (comics.isActiveDiscount()) {
+                BigDecimal newPrice = comics.getPrice().multiply(discount);
+                newPrice = newPrice.setScale(2, RoundingMode.HALF_UP);
+                comics.setPrice(newPrice);
+
+            }
+        }
+
+        return userListComicsDTO;
+    }
+
 }

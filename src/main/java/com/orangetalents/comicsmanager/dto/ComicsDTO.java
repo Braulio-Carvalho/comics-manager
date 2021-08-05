@@ -58,4 +58,6 @@ public class ComicsDTO {
     public void setCreators(CreatorsDTO creators) {
         this.creators = creators;
     }
+
+
 }

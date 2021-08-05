@@ -2,15 +2,16 @@ package com.orangetalents.comicsmanager.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 @Entity
 @Table
 public class Comics {
 
-    public Comics(Long id, String discountDay, boolean activeDiscount, String title, BigDecimal price, String author, String isbn, String description, User user) {
+    public Comics(Long id, DayOfWeek discountDay, String title, BigDecimal price, String author, String isbn, String description, User user) {
         this.id = id;
         this.discountDay = discountDay;
-        this.activeDiscount = activeDiscount;
         this.title = title;
         this.price = price;
         Author = author;
@@ -22,13 +23,11 @@ public class Comics {
     public Comics() {
     }
 
-
     @Id
     private Long id;
 
-    private String discountDay;
-
-    private boolean activeDiscount;
+    @Enumerated(EnumType.STRING)
+    private DayOfWeek discountDay;
 
     private String title;
 
@@ -53,20 +52,16 @@ public class Comics {
         this.id = comicId;
     }
 
-    public String getDiscountDay() {
+    public DayOfWeek getDiscountDay() {
         return discountDay;
     }
 
-    public void setDiscountDay(String discountDay) {
+    public void setDiscountDay(DayOfWeek discountDay) {
         this.discountDay = discountDay;
     }
 
     public boolean isActiveDiscount() {
-        return activeDiscount;
-    }
-
-    public void setActiveDiscount(boolean activeDiscount) {
-        this.activeDiscount = activeDiscount;
+        return LocalDate.now().getDayOfWeek() == this.discountDay;
     }
 
     public String getTitle() {
@@ -78,6 +73,7 @@ public class Comics {
     }
 
     public BigDecimal getPrice() {
+
         return price;
     }
 

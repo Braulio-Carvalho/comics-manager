@@ -1,4 +1,4 @@
-package com.orangetalents.comicsmanager.client;
+package com.orangetalents.comicsmanager.utils.client;
 
 import com.orangetalents.comicsmanager.dto.MarvelResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
