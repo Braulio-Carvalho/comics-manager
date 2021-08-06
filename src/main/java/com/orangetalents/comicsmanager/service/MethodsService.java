@@ -6,16 +6,10 @@ import java.time.DayOfWeek;
 
 @Service
 public class MethodsService {
-
     DayOfWeek discountDay;
 
     public void lastChar(char lastChars) {
-
-
-
-
         switch (lastChars) {
-
             case '0':
             case '1':
                 discountDay = DayOfWeek.MONDAY;
@@ -42,8 +36,5 @@ public class MethodsService {
                 break;
 
         }
-
     }
-
-
 }

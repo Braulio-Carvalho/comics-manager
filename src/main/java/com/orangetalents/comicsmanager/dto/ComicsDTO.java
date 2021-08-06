@@ -3,7 +3,6 @@ package com.orangetalents.comicsmanager.dto;
 import java.util.List;
 
 public class ComicsDTO {
-
     private Long id;
     private String title;
     private String description;

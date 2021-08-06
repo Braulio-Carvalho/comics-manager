@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Date;
-
 @ControllerAdvice
 public class ExceptionManagementHandler extends ResponseEntityExceptionHandler {
 
@@ -19,8 +17,8 @@ public class ExceptionManagementHandler extends ResponseEntityExceptionHandler {
 
     }
 
-    @ExceptionHandler(value = UserAlreadyExists.class)
-    public ResponseEntity<?> handlerUserAlreadyExist(UserAlreadyExists e, WebRequest request) {
+    @ExceptionHandler(value = UserAlreadyExistsException.class)
+    public ResponseEntity<?> handlerUserAlreadyExist(UserAlreadyExistsException e, WebRequest request) {
         return new ResponseEntity<>(e.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT);
 
     }

@@ -23,16 +23,12 @@ public class ComicsService {
 
     @Autowired
     private MarvelClient marvelClient;
-
     @Autowired
     private ComicsRepository comicsRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private MethodsService methodsService;
-
 
     public Comics createComics(Long id, Long comicsId) {
 
@@ -42,7 +38,6 @@ public class ComicsService {
         char lastChar = comicsDTO.getIsbn().charAt(comicsDTO.getIsbn().length() - 1);
 
         methodsService.lastChar(lastChar);
-
         Comics comics = new Comics(
                 comicsDTO.getId(),
                 methodsService.discountDay,
@@ -62,7 +57,6 @@ public class ComicsService {
         UserListComicsDTO userListComicsDTO = new UserListComicsDTO(user, userComicList);
 
         BigDecimal discount = BigDecimal.valueOf(0.9);
-
         for (Comics comics : userComicList) {
             if (comics.isActiveDiscount()) {
                 BigDecimal newPrice = comics.getPrice().multiply(discount);
