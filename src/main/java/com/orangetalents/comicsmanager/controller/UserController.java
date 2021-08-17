@@ -1,8 +1,8 @@
 package com.orangetalents.comicsmanager.controller;
 import com.orangetalents.comicsmanager.dto.UserListComicsDTO;
 import com.orangetalents.comicsmanager.model.User;
-import com.orangetalents.comicsmanager.service.ComicsService;
-import com.orangetalents.comicsmanager.service.UserService;
+import com.orangetalents.comicsmanager.service.serviceImpl.ComicsServiceImpl;
+import com.orangetalents.comicsmanager.service.serviceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,25 +15,25 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
-    private ComicsService comicsService;
+    private ComicsServiceImpl comicsServiceImpl;
 
 
     @GetMapping()
     public ResponseEntity<List<User>> listUsers() {
-        return ResponseEntity.ok(userService.listUser());
+        return ResponseEntity.ok(userServiceImpl.listUser());
     }
 
     @GetMapping("{id}")
     public ResponseEntity<UserListComicsDTO> list(@PathVariable Long id) {
-        return ResponseEntity.ok(comicsService.getUserComicList(id));
+        return ResponseEntity.ok(comicsServiceImpl.getUserComicList(id));
     }
 
     @PostMapping
     public ResponseEntity<User> saveUser(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userServiceImpl.createUser(user));
     }
 
 
